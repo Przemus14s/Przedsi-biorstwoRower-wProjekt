@@ -1,3 +1,5 @@
+package pl.gornik.szynal;
+
 import java.util.*;
 
 public class Authentication {
