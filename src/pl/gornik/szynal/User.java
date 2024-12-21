@@ -1,9 +1,10 @@
 package pl.gornik.szynal;
 
+
 public class User {
-    private String username;
-    private String password;
-    private String role;
+    private final String username;
+    private final String password;
+    private final String role;
 
     public User(String username, String password, String role) {
         this.username = username;

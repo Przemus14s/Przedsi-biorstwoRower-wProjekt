@@ -3,7 +3,7 @@ package pl.gornik.szynal;
 import java.util.*;
 
 public class Warehouse {
-    private List<String> parts;
+    private final List<String> parts;
 
     public Warehouse() {
         parts = new ArrayList<>();
@@ -15,9 +15,9 @@ public class Warehouse {
 
     public void listParts() {
         if (parts.isEmpty()) {
-            System.out.println("The warehouse is empty.");
+            System.out.println("Magazyn jest pusty.");
         } else {
-            System.out.println("Parts in the warehouse:");
+            System.out.println("Części w magazynie:");
             for (String part : parts) {
                 System.out.println("- " + part);
             }

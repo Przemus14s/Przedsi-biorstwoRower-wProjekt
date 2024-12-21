@@ -3,7 +3,7 @@ package pl.gornik.szynal;
 import java.util.*;
 
 public class Authentication {
-    private List<User> users;
+    private final List<User> users;
 
     public Authentication() {
         users = new ArrayList<>();
