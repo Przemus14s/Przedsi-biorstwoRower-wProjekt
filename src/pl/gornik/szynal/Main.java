@@ -1,4 +1,5 @@
 package pl.gornik.szynal;
+
 import java.util.*;
 
 public class Main {
@@ -6,6 +7,7 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
         Authentication auth = new Authentication();
         Warehouse warehouse = new Warehouse();
+        CertificateManager certificateManager = new CertificateManager();
 
         while (true) {
             System.out.println("=== Fabryka Rowerów ===");
@@ -40,19 +42,41 @@ public class Main {
                     System.out.println("Zalogowano pomyślnie! Witaj, " + loggedInUser.getRole() + " " + loggedInUser.getUsername() + ".");
 
                     if ("manager".equals(loggedInUser.getRole())) {
-                        System.out.println("Dostęp do: Zamówień części, statusu produkcji, opłat, tworzenia produktów.");
-
-                    } else if ("employee".equals(loggedInUser.getRole())) {
                         while (true) {
-                            System.out.println("\nMenu Pracownika:");
-                            System.out.println("1. Dostęp do magazynu");
-                            System.out.println("2. Wyloguj się");
+                            System.out.println("\nMenu Kierownika:");
+                            System.out.println("1. Zarządzaj certyfikatami");
+                            System.out.println("2. Zarządzaj magazynem");
+                            System.out.println("3. Wyloguj się");
                             System.out.print("Wybierz opcję: ");
 
-                            int empChoice = scanner.nextInt();
+                            int managerChoice = scanner.nextInt();
                             scanner.nextLine();
 
-                            if (empChoice == 1) {
+                            if (managerChoice == 1) {
+                                while (true) {
+                                    System.out.println("\nMenu Certyfikatów:");
+                                    System.out.println("1. Dodaj certyfikat");
+                                    System.out.println("2. Wyświetl certyfikaty");
+                                    System.out.println("3. Wróć");
+                                    System.out.print("Wybierz opcję: ");
+
+                                    int certChoice = scanner.nextInt();
+                                    scanner.nextLine();
+
+                                    if (certChoice == 1) {
+                                        System.out.print("Podaj nazwę certyfikatu: ");
+                                        String certificate = scanner.nextLine();
+                                        certificateManager.addCertificate(certificate);
+                                        System.out.println("Certyfikat został dodany.");
+                                    } else if (certChoice == 2) {
+                                        certificateManager.listCertificates();
+                                    } else if (certChoice == 3) {
+                                        break;
+                                    } else {
+                                        System.out.println("Nieprawidłowa opcja. Spróbuj ponownie.");
+                                    }
+                                }
+                            } else if (managerChoice == 2) {
                                 while (true) {
                                     System.out.println("\nMenu Magazynu:");
                                     System.out.println("1. Dodaj część");
@@ -76,6 +100,25 @@ public class Main {
                                         System.out.println("Nieprawidłowa opcja. Spróbuj ponownie.");
                                     }
                                 }
+                            } else if (managerChoice == 3) {
+                                System.out.println("Wylogowywanie...");
+                                break;
+                            } else {
+                                System.out.println("Nieprawidłowa opcja. Spróbuj ponownie.");
+                            }
+                        }
+                    } else if ("employee".equals(loggedInUser.getRole())) {
+                        while (true) {
+                            System.out.println("\nMenu Pracownika:");
+                            System.out.println("1. Wyświetl certyfikaty");
+                            System.out.println("2. Wyloguj się");
+                            System.out.print("Wybierz opcję: ");
+
+                            int empChoice = scanner.nextInt();
+                            scanner.nextLine();
+
+                            if (empChoice == 1) {
+                                certificateManager.listCertificates();
                             } else if (empChoice == 2) {
                                 System.out.println("Wylogowywanie...");
                                 break;
