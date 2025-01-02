@@ -13,6 +13,14 @@ public class Warehouse {
         parts.add(part);
     }
 
+    public boolean removePart(String part) {
+        if (parts.contains(part)) {
+            parts.remove(part);
+            return true;
+        }
+        return false;
+    }
+
     public void listParts() {
         if (parts.isEmpty()) {
             System.out.println("Magazyn jest pusty.");

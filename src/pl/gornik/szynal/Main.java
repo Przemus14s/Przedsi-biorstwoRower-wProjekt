@@ -8,6 +8,7 @@ public class Main {
         Authentication auth = new Authentication();
         Warehouse warehouse = new Warehouse();
         CertificateManager certificateManager = new CertificateManager();
+        OrderManager orderManager = new OrderManager();
 
         while (true) {
             System.out.println("=== Fabryka Rowerów ===");
@@ -46,7 +47,8 @@ public class Main {
                             System.out.println("\nMenu Kierownika:");
                             System.out.println("1. Zarządzaj certyfikatami");
                             System.out.println("2. Zarządzaj magazynem");
-                            System.out.println("3. Wyloguj się");
+                            System.out.println("3. Zarządzaj zamówieniami");
+                            System.out.println("4. Wyloguj się");
                             System.out.print("Wybierz opcję: ");
 
                             int managerChoice = scanner.nextInt();
@@ -101,7 +103,31 @@ public class Main {
                                     }
                                 }
                             } else if (managerChoice == 3) {
-                                System.out.println("Wylogowywanie...");
+                                while (true) {
+                                    System.out.println("\nMenu Zamówień:");
+                                    System.out.println("1. Wyświetl zamówienia");
+                                    System.out.println("2. Zrealizuj zamówienie");
+                                    System.out.println("3. Wróć");
+                                    System.out.print("Wybierz opcję: ");
+
+                                    int orderChoice = scanner.nextInt();
+                                    scanner.nextLine();
+
+                                    if (orderChoice == 1) {
+                                        orderManager.listOrders();
+                                    } else if (orderChoice == 2) {
+                                        System.out.print("Podaj numer zamówienia do realizacji: ");
+                                        int orderIndex = scanner.nextInt();
+                                        scanner.nextLine();
+                                        orderManager.fulfillOrder(orderIndex, warehouse);
+                                    } else if (orderChoice == 3) {
+                                        break;
+                                    } else {
+                                        System.out.println("Nieprawidłowa opcja. Spróbuj ponownie.");
+                                    }
+                                }
+                            } else if (managerChoice == 4) {
+                                System.out.println("Wylogowano.");
                                 break;
                             } else {
                                 System.out.println("Nieprawidłowa opcja. Spróbuj ponownie.");
@@ -110,17 +136,35 @@ public class Main {
                     } else if ("employee".equals(loggedInUser.getRole())) {
                         while (true) {
                             System.out.println("\nMenu Pracownika:");
-                            System.out.println("1. Wyświetl certyfikaty");
-                            System.out.println("2. Wyloguj się");
+                            System.out.println("1. Złóż zamówienie");
+                            System.out.println("2. Wyświetl certyfikaty");
+                            System.out.println("3. Wyloguj się");
                             System.out.print("Wybierz opcję: ");
 
-                            int empChoice = scanner.nextInt();
+                            int employeeChoice = scanner.nextInt();
                             scanner.nextLine();
 
-                            if (empChoice == 1) {
+                            if (employeeChoice == 1) {
+                                Map<String, String> order = new LinkedHashMap<>();
+                                System.out.print("Podaj ramę: ");
+                                order.put("Rama", scanner.nextLine());
+                                System.out.print("Podaj rozmiar kół: ");
+                                order.put("Rozmiar kół", scanner.nextLine());
+                                System.out.print("Podaj pedały: ");
+                                order.put("Pedały", scanner.nextLine());
+                                System.out.print("Podaj kierownicę: ");
+                                order.put("Kierownica", scanner.nextLine());
+                                System.out.print("Podaj dzwonek: ");
+                                order.put("Dzwonek", scanner.nextLine());
+                                System.out.print("Podaj światła: ");
+                                order.put("Światła", scanner.nextLine());
+
+                                orderManager.addOrder(order);
+                                System.out.println("Zamówienie zostało złożone.");
+                            } else if (employeeChoice == 2) {
                                 certificateManager.listCertificates();
-                            } else if (empChoice == 2) {
-                                System.out.println("Wylogowywanie...");
+                            } else if (employeeChoice == 3) {
+                                System.out.println("Wylogowano.");
                                 break;
                             } else {
                                 System.out.println("Nieprawidłowa opcja. Spróbuj ponownie.");
