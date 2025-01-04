@@ -3,11 +3,7 @@ package pl.gornik.szynal;
 import java.util.*;
 
 public class OrderManager {
-    private final List<Map<String, String>> orders;
-
-    public OrderManager() {
-        orders = new ArrayList<>();
-    }
+    private List<Map<String, String>> orders = new ArrayList<>();
 
     public void addOrder(Map<String, String> order) {
         orders.add(order);
@@ -17,34 +13,37 @@ public class OrderManager {
         if (orders.isEmpty()) {
             System.out.println("Brak zamówień.");
         } else {
-            System.out.println("Lista zamówień:");
-            int index = 1;
-            for (Map<String, String> order : orders) {
-                System.out.println("Zamówienie #" + index++);
-                for (Map.Entry<String, String> entry : order.entrySet()) {
-                    System.out.println(entry.getKey() + ": " + entry.getValue());
-                }
-                System.out.println("---------------");
+            System.out.println("Zamówienia:");
+            for (int i = 0; i < orders.size(); i++) {
+                System.out.println((i + 1) + ". " + orders.get(i));
             }
         }
     }
 
-    public boolean fulfillOrder(int index, Warehouse warehouse) {
+    public void fulfillOrder(int index, Warehouse warehouse) {
         if (index < 1 || index > orders.size()) {
             System.out.println("Nieprawidłowy numer zamówienia.");
-            return false;
+            return;
         }
 
         Map<String, String> order = orders.get(index - 1);
+        boolean canFulfill = true;
+
         for (String part : order.values()) {
-            if (!warehouse.removePart(part)) {
+            if (!warehouse.hasPart(part)) {
                 System.out.println("Brak części w magazynie: " + part);
-                return false;
+                canFulfill = false;
             }
         }
 
-        orders.remove(index - 1);
-        System.out.println("Zamówienie zostało zrealizowane.");
-        return true;
+        if (canFulfill) {
+            for (String part : order.values()) {
+                warehouse.removePart(part);
+            }
+            orders.remove(index - 1);
+            System.out.println("Zamówienie zostało zrealizowane.");
+        } else {
+            System.out.println("Nie udało się zrealizować zamówienia.");
+        }
     }
 }

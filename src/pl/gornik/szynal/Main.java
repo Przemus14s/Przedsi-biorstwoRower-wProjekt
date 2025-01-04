@@ -9,6 +9,7 @@ public class Main {
         Warehouse warehouse = new Warehouse();
         CertificateManager certificateManager = new CertificateManager();
         OrderManager orderManager = new OrderManager();
+        FeedbackManager feedbackManager = new FeedbackManager();
 
         while (true) {
             System.out.println("=== Fabryka Rowerów ===");
@@ -138,32 +139,42 @@ public class Main {
                             System.out.println("\nMenu Pracownika:");
                             System.out.println("1. Złóż zamówienie");
                             System.out.println("2. Wyświetl certyfikaty");
-                            System.out.println("3. Wyloguj się");
+                            System.out.println("3. Wystaw opinię i ocenę");
+                            System.out.println("4. Wyloguj się");
                             System.out.print("Wybierz opcję: ");
 
-                            int employeeChoice = scanner.nextInt();
+                            int empChoice = scanner.nextInt();
                             scanner.nextLine();
 
-                            if (employeeChoice == 1) {
-                                Map<String, String> order = new LinkedHashMap<>();
-                                System.out.print("Podaj ramę: ");
+                            if (empChoice == 1) {
+                                Map<String, String> order = new HashMap<>();
+                                System.out.print("Podaj rodzaj ramy: ");
                                 order.put("Rama", scanner.nextLine());
                                 System.out.print("Podaj rozmiar kół: ");
-                                order.put("Rozmiar kół", scanner.nextLine());
-                                System.out.print("Podaj pedały: ");
+                                order.put("Koła", scanner.nextLine());
+                                System.out.print("Podaj rodzaj pedałów: ");
                                 order.put("Pedały", scanner.nextLine());
-                                System.out.print("Podaj kierownicę: ");
+                                System.out.print("Podaj rodzaj kierownicy: ");
                                 order.put("Kierownica", scanner.nextLine());
-                                System.out.print("Podaj dzwonek: ");
+                                System.out.print("Dodaj dzwonek (tak/nie): ");
                                 order.put("Dzwonek", scanner.nextLine());
-                                System.out.print("Podaj światła: ");
+                                System.out.print("Dodaj światła (tak/nie): ");
                                 order.put("Światła", scanner.nextLine());
 
                                 orderManager.addOrder(order);
                                 System.out.println("Zamówienie zostało złożone.");
-                            } else if (employeeChoice == 2) {
+                            } else if (empChoice == 2) {
                                 certificateManager.listCertificates();
-                            } else if (employeeChoice == 3) {
+                            } else if (empChoice == 3) {
+                                System.out.print("Podaj ocenę roweru (1-5): ");
+                                int rating = scanner.nextInt();
+                                scanner.nextLine();
+                                System.out.print("Podaj komentarz: ");
+                                String comment = scanner.nextLine();
+
+                                feedbackManager.addFeedback(rating, comment);
+                                System.out.println("Opinia została dodana.");
+                            } else if (empChoice == 4) {
                                 System.out.println("Wylogowano.");
                                 break;
                             } else {
@@ -172,11 +183,11 @@ public class Main {
                         }
                     }
                 } else {
-                    System.out.println("Nieprawidłowa nazwa użytkownika lub hasło. Spróbuj ponownie.");
+                    System.out.println("Nieprawidłowe dane logowania. Spróbuj ponownie.");
                 }
 
             } else if (choice == 3) {
-                System.out.println("Zamykanie systemu. Do widzenia!");
+                System.out.println("Do widzenia!");
                 break;
             } else {
                 System.out.println("Nieprawidłowa opcja. Spróbuj ponownie.");

@@ -3,32 +3,26 @@ package pl.gornik.szynal;
 import java.util.*;
 
 public class Warehouse {
-    private final List<String> parts;
-
-    public Warehouse() {
-        parts = new ArrayList<>();
-    }
+    private Map<String, Integer> parts = new HashMap<>();
 
     public void addPart(String part) {
-        parts.add(part);
+        parts.put(part, parts.getOrDefault(part, 0) + 1);
     }
 
     public boolean removePart(String part) {
-        if (parts.contains(part)) {
-            parts.remove(part);
+        if (parts.getOrDefault(part, 0) > 0) {
+            parts.put(part, parts.get(part) - 1);
             return true;
         }
         return false;
     }
 
     public void listParts() {
-        if (parts.isEmpty()) {
-            System.out.println("Magazyn jest pusty.");
-        } else {
-            System.out.println("Części w magazynie:");
-            for (String part : parts) {
-                System.out.println("- " + part);
-            }
-        }
+        System.out.println("Części w magazynie:");
+        parts.forEach((part, quantity) -> System.out.println(part + ": " + quantity));
+    }
+
+    public boolean hasPart(String part) {
+        return parts.getOrDefault(part, 0) > 0;
     }
 }
