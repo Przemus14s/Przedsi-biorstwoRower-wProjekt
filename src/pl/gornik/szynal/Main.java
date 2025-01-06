@@ -1,5 +1,9 @@
 package pl.gornik.szynal;
 
+import pl.gornik.szynal.management.*;
+import pl.gornik.szynal.users.Authentication;
+import pl.gornik.szynal.users.User;
+
 import java.util.*;
 
 public class Main {

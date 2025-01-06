@@ -1,4 +1,4 @@
-package pl.gornik.szynal;
+package pl.gornik.szynal.users;
 
 import java.util.*;
 

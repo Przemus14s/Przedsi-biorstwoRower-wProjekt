@@ -1,4 +1,4 @@
-package pl.gornik.szynal;
+package pl.gornik.szynal.management;
 
 import java.util.ArrayList;
 import java.util.List;
