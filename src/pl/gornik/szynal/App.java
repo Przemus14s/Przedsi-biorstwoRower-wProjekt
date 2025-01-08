@@ -110,19 +110,31 @@ public class App {
     }
 
     private void warehouseMenu() {
-        System.out.println("1. Dodaj część");
-        System.out.println("2. Wyświetl części");
-        System.out.print("Wybierz opcję: ");
-        int warehouseChoice = scanner.nextInt();
-        scanner.nextLine();
+        while (true) {
+            System.out.println("\n=== Zarządzanie magazynem ===");
+            System.out.println("1. Dodaj część");
+            System.out.println("2. Wyświetl części w magazynie");
+            System.out.println("3. Wyświetl dostępne części");
+            System.out.println("4. Powrót");
+            System.out.print("Wybierz opcję: ");
+            int warehouseChoice = scanner.nextInt();
+            scanner.nextLine();
 
-        if (warehouseChoice == 1) {
-            System.out.print("Podaj nazwę części do dodania: ");
-            String part = scanner.nextLine();
-            warehouse.addPart(part);
-            System.out.println("Dodano część do magazynu.");
-        } else if (warehouseChoice == 2) {
-            warehouse.listParts();
+            if (warehouseChoice == 1) {
+                System.out.print("Podaj nazwę części do dodania: ");
+                String part = scanner.nextLine();
+                if (warehouse.addPart(part)) {
+                    System.out.println("Dodano część do magazynu.");
+                }
+            } else if (warehouseChoice == 2) {
+                warehouse.listParts();
+            } else if (warehouseChoice == 3) {
+                warehouse.listAvailableParts();
+            } else if (warehouseChoice == 4) {
+                break;
+            } else {
+                System.out.println("Nieprawidłowa opcja.");
+            }
         }
     }
 
@@ -189,18 +201,20 @@ public class App {
 
     private void placeOrder() {
         Map<String, String> order = new HashMap<>();
-        System.out.print("Podaj typ ramy: ");
-        order.put("Rama", scanner.nextLine());
-        System.out.print("Podaj rozmiar kół: ");
-        order.put("Koła", scanner.nextLine());
-        System.out.print("Podaj typ pedałów: ");
-        order.put("Pedały", scanner.nextLine());
-        System.out.print("Podaj typ kierownicy: ");
-        order.put("Kierownica", scanner.nextLine());
-        System.out.print("Podaj typ dzwonka: ");
-        order.put("Dzwonek", scanner.nextLine());
-        System.out.print("Podaj typ świateł: ");
-        order.put("Światła", scanner.nextLine());
+        System.out.println("=== Składanie zamówienia ===");
+        System.out.println("Dostępne części:");
+        warehouse.listAvailableParts();
+
+        for (String category : Warehouse.categories.keySet()) {
+            System.out.print("Wybierz " + category + ": ");
+            String part = scanner.nextLine();
+            if (Warehouse.categories.get(category).contains(part)) {
+                order.put(category, part);
+            } else {
+                System.out.println("Nieprawidłowa nazwa części. Zamówienie przerwane.");
+                return;
+            }
+        }
 
         orderManager.addOrder(order);
         System.out.println("Złożono zamówienie.");

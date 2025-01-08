@@ -35,7 +35,6 @@ public class OrderManager {
                 canFulfill = false;
             }
         }
-
         if (canFulfill) {
             for (String part : order.values()) {
                 warehouse.removePart(part);

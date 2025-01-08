@@ -4,9 +4,26 @@ import java.util.*;
 
 public class Warehouse {
     private Map<String, Integer> parts = new HashMap<>();
+    public static final Map<String, List<String>> categories = new HashMap<>();
 
-    public void addPart(String part) {
-        parts.put(part, parts.getOrDefault(part, 0) + 1);
+    static {
+        categories.put("Rama", Arrays.asList("Rama aluminiowa", "Rama karbonowa", "Rama stalowa"));
+        categories.put("Koła", Arrays.asList("Koła szosowe", "Koła terenowe", "Koła miejskie"));
+        categories.put("Pedały", Arrays.asList("Pedały platformowe", "Pedały zatrzaskowe", "Pedały składane"));
+        categories.put("Kierownica", Arrays.asList("Kierownica prosta", "Kierownica gięta", "Kierownica typu baranek"));
+        categories.put("Dzwonek", Arrays.asList("Dzwonek klasyczny", "Dzwonek elektroniczny", "Dzwonek retro"));
+        categories.put("Światła", Arrays.asList("Światło LED przednie", "Światło tylne LED", "Światło halogenowe"));
+    }
+
+    public boolean addPart(String part) {
+
+        for (List<String> validParts : categories.values()) {
+            if (validParts.contains(part)) {
+                parts.put(part, parts.getOrDefault(part, 0) + 1);
+                return true;
+            }
+        }
+        return false;
     }
 
     public boolean removePart(String part) {
@@ -19,7 +36,18 @@ public class Warehouse {
 
     public void listParts() {
         System.out.println("Części w magazynie:");
-        parts.forEach((part, quantity) -> System.out.println(part + ": " + quantity));
+        if (parts.isEmpty()) {
+            System.out.println("Brak części w magazynie.");
+        } else {
+            parts.forEach((part, quantity) -> System.out.println(part + ": " + quantity));
+        }
+    }
+
+    public void listAvailableParts() {
+        System.out.println("Dostępne części do magazynowania:");
+        categories.forEach((category, validParts) -> {
+            System.out.println("- " + category + ": " + String.join(", ", validParts));
+        });
     }
 
     public boolean hasPart(String part) {
