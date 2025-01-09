@@ -46,7 +46,7 @@ public class App {
         String username = scanner.nextLine();
         System.out.print("Podaj hasło: ");
         String password = scanner.nextLine();
-        System.out.print("Podaj rolę (employee/manager): ");
+        System.out.print("Podaj rolę (menadżer/pracownik/klient): ");
         String role = scanner.nextLine();
 
         auth.register(username, password, role);
@@ -63,10 +63,12 @@ public class App {
 
         if (loggedInUser != null) {
             System.out.println("Zalogowano pomyślnie! Witaj, " + loggedInUser.getRole() + " " + loggedInUser.getUsername() + ".");
-            if ("manager".equals(loggedInUser.getRole())) {
+            if ("menadżer".equals(loggedInUser.getRole())) {
                 managerMenu();
-            } else if ("employee".equals(loggedInUser.getRole())) {
+            } else if ("pracownik".equals(loggedInUser.getRole())) {
                 employeeMenu();
+            } else if ("klient".equals(loggedInUser.getRole())) {
+                clientMenu();
             }
         } else {
             System.out.println("Nieprawidłowa nazwa użytkownika lub hasło.");
@@ -75,32 +77,83 @@ public class App {
 
     private void managerMenu() {
         while (true) {
-            System.out.println("\n=== Menu Kierownika ===");
-            System.out.println("1. Zarządzaj magazynem");
-            System.out.println("2. Zarządzaj certyfikatami");
-            System.out.println("3. Wyświetl zamówienia");
-            System.out.println("4. Realizuj zamówienie");
-            System.out.println("5. Dodaj aktywność");
-            System.out.println("6. Wyświetl aktywności");
-            System.out.println("7. Wyloguj się");
+            System.out.println("\n=== Menu Menadżera ===");
+            System.out.println("1. Zarządzanie certyfikatami");
+            System.out.println("2. Dodanie aktywności");
+            System.out.println("3. Wyświetlenie aktywności");
+            System.out.println("4. Zarządzanie magazynem");
+            System.out.println("5. Wyloguj się");
             System.out.print("Wybierz opcję: ");
 
             int managerChoice = scanner.nextInt();
             scanner.nextLine();
 
             if (managerChoice == 1) {
-                warehouseMenu();
-            } else if (managerChoice == 2) {
                 certificateMenu();
-            } else if (managerChoice == 3) {
-                orderManager.listOrders();
-            } else if (managerChoice == 4) {
-                fulfillOrder();
-            } else if (managerChoice == 5) {
+            } else if (managerChoice == 2) {
                 addActivity();
-            } else if (managerChoice == 6) {
+            } else if (managerChoice == 3) {
                 activityManager.listActivities();
-            } else if (managerChoice == 7) {
+            } else if (managerChoice == 4) {
+                warehouseMenu();
+            } else if (managerChoice == 5) {
+                System.out.println("Wylogowano.");
+                break;
+            } else {
+                System.out.println("Nieprawidłowa opcja.");
+            }
+        }
+    }
+
+    private void employeeMenu() {
+        while (true) {
+            System.out.println("\n=== Menu Pracownika ===");
+            System.out.println("1. Zarządzaj magazynem");
+            System.out.println("2. Wyświetl zamówienia");
+            System.out.println("3. Realizuj zamówienie");
+            System.out.println("4. Wyloguj się");
+            System.out.print("Wybierz opcję: ");
+
+            int employeeChoice = scanner.nextInt();
+            scanner.nextLine();
+
+            if (employeeChoice == 1) {
+                warehouseMenu();
+            } else if (employeeChoice == 2) {
+                orderManager.listOrders();
+            } else if (employeeChoice == 3) {
+                fulfillOrder();
+            } else if (employeeChoice == 4) {
+                System.out.println("Wylogowano.");
+                break;
+            } else {
+                System.out.println("Nieprawidłowa opcja.");
+            }
+        }
+    }
+
+    private void clientMenu() {
+        while (true) {
+            System.out.println("\n=== Menu Klienta ===");
+            System.out.println("1. Złóż zamówienie");
+            System.out.println("2. Wyświetl certyfikaty");
+            System.out.println("3. Wyświetl opinie");
+            System.out.println("4. Dodaj opinię");
+            System.out.println("5. Wyloguj się");
+            System.out.print("Wybierz opcję: ");
+
+            int clientChoice = scanner.nextInt();
+            scanner.nextLine();
+
+            if (clientChoice == 1) {
+                placeOrder();
+            } else if (clientChoice == 2) {
+                certificateManager.listCertificates();
+            } else if (clientChoice == 3) {
+                feedbackManager.listFeedbacks();
+            } else if (clientChoice == 4) {
+                addFeedback();
+            } else if (clientChoice == 5) {
                 System.out.println("Wylogowano.");
                 break;
             } else {
@@ -125,6 +178,8 @@ public class App {
                 String part = scanner.nextLine();
                 if (warehouse.addPart(part)) {
                     System.out.println("Dodano część do magazynu.");
+                } else {
+                    System.out.println("Nieprawidłowa część.");
                 }
             } else if (warehouseChoice == 2) {
                 warehouse.listParts();
@@ -167,36 +222,6 @@ public class App {
         String activity = scanner.nextLine();
         activityManager.addActivity(activity);
         System.out.println("Dodano aktywność.");
-    }
-
-    private void employeeMenu() {
-        while (true) {
-            System.out.println("\n=== Menu Pracownika ===");
-            System.out.println("1. Złóż zamówienie");
-            System.out.println("2. Wyświetl certyfikaty");
-            System.out.println("3. Wyświetl opinie");
-            System.out.println("4. Dodaj opinię");
-            System.out.println("5. Wyloguj się");
-            System.out.print("Wybierz opcję: ");
-
-            int employeeChoice = scanner.nextInt();
-            scanner.nextLine();
-
-            if (employeeChoice == 1) {
-                placeOrder();
-            } else if (employeeChoice == 2) {
-                certificateManager.listCertificates();
-            } else if (employeeChoice == 3) {
-                feedbackManager.listFeedbacks();
-            } else if (employeeChoice == 4) {
-                addFeedback();
-            } else if (employeeChoice == 5) {
-                System.out.println("Wylogowano.");
-                break;
-            } else {
-                System.out.println("Nieprawidłowa opcja.");
-            }
-        }
     }
 
     private void placeOrder() {

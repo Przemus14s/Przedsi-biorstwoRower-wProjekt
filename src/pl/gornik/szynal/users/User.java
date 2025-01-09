@@ -1,6 +1,5 @@
 package pl.gornik.szynal.users;
 
-
 public class User {
     private final String username;
     private final String password;

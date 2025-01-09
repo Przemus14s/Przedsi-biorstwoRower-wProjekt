@@ -16,7 +16,6 @@ public class Warehouse {
     }
 
     public boolean addPart(String part) {
-
         for (List<String> validParts : categories.values()) {
             if (validParts.contains(part)) {
                 parts.put(part, parts.getOrDefault(part, 0) + 1);
