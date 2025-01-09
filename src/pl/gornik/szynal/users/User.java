@@ -5,7 +5,7 @@ import pl.gornik.szynal.exceptions.ValidationException;
 public class User {
     private final String username;
     private String password;
-    private final Role role;
+    private Role role;
 
     public User(String username, String password, Role role) {
         if (username == null || username.isEmpty()) {
@@ -27,7 +27,6 @@ public class User {
         return password;
     }
 
-
     public void setPassword(String newPassword) {
         if (newPassword == null || newPassword.length() < 6) {
             throw new ValidationException("Hasło musi mieć co najmniej 6 znaków.");
@@ -37,5 +36,13 @@ public class User {
 
     public Role getRole() {
         return role;
+    }
+
+
+    public void setRole(Role newRole) {
+        if (newRole == null) {
+            throw new ValidationException("Rola nie może być pusta.");
+        }
+        this.role = newRole;
     }
 }

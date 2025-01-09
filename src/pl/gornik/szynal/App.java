@@ -1,6 +1,7 @@
 package pl.gornik.szynal;
 
 import pl.gornik.szynal.management.*;
+import pl.gornik.szynal.tasks.*;
 import pl.gornik.szynal.users.*;
 
 import java.util.*;
@@ -13,8 +14,13 @@ public class App {
     private final OrderManager orderManager = new OrderManager();
     private final FeedbackManager feedbackManager = new FeedbackManager();
     private final ActivityManager activityManager = new ActivityManager();
+    private final EmployeeTasks employeeTasks = new EmployeeTasks();
+
 
     public void run() {
+
+        setupEmployees();
+
         while (true) {
             System.out.println("=== Fabryka Rowerów ===");
             System.out.println("1. Zarejestruj się");
@@ -37,6 +43,7 @@ public class App {
         }
     }
 
+
     private void register() {
         System.out.print("Podaj nazwę użytkownika: ");
         String username = scanner.nextLine();
@@ -53,6 +60,7 @@ public class App {
             System.out.println("Nieprawidłowa rola. Rejestracja nie powiodła się.");
         }
     }
+
 
     private void login() {
         System.out.print("Podaj nazwę użytkownika: ");
@@ -73,6 +81,7 @@ public class App {
         }
     }
 
+
     private void managerMenu() {
         while (true) {
             System.out.println("\n=== Menu Menadżera ===");
@@ -81,8 +90,9 @@ public class App {
             System.out.println("3. Wyświetlenie aktywności");
             System.out.println("4. Zarządzanie magazynem");
             System.out.println("5. Wyświetl zrealizowane zamówienia");
-            System.out.println("6. Zmień hasło");
-            System.out.println("7. Wyloguj się");
+            System.out.println("6. Sprawdź status pracowników");
+            System.out.println("7. Zmień hasło");
+            System.out.println("8. Wyloguj się");
             System.out.print("Wybierz opcję: ");
 
             int choice = scanner.nextInt();
@@ -94,8 +104,9 @@ public class App {
                 case 3 -> activityManager.listActivities();
                 case 4 -> warehouseMenu();
                 case 5 -> orderManager.listFulfilledOrders();
-                case 6 -> changePassword(); // Nowa opcja zmiany hasła
-                case 7 -> {
+                case 6 -> employeeTasks.checkEmployeesStatus(); // Sprawdzanie statusu pracowników
+                case 7 -> changePassword();
+                case 8 -> {
                     System.out.println("Wylogowano.");
                     return;
                 }
@@ -103,6 +114,7 @@ public class App {
             }
         }
     }
+
 
     private void employeeMenu() {
         while (true) {
@@ -133,6 +145,7 @@ public class App {
         }
     }
 
+
     private void clientMenu(String username) {
         while (true) {
             System.out.println("\n=== Menu Klienta ===");
@@ -162,6 +175,7 @@ public class App {
         }
     }
 
+
     private void changePassword() {
         System.out.print("Podaj stare hasło: ");
         String oldPassword = scanner.nextLine();
@@ -177,6 +191,7 @@ public class App {
             System.out.println(e.getMessage());
         }
     }
+
 
     private void placeOrder(String username) {
         Map<String, String> order = new HashMap<>();
@@ -199,6 +214,7 @@ public class App {
         System.out.println("Złożono zamówienie.");
     }
 
+
     private void fulfillOrder() {
         orderManager.listOrders();
         System.out.print("Podaj numer zamówienia do realizacji: ");
@@ -206,6 +222,7 @@ public class App {
         scanner.nextLine();
         orderManager.fulfillOrder(orderIndex, warehouse);
     }
+
 
     private void warehouseMenu() {
         while (true) {
@@ -231,6 +248,7 @@ public class App {
         }
     }
 
+
     private void certificateMenu() {
         while (true) {
             System.out.println("\n=== Menu Certyfikatów ===");
@@ -253,6 +271,7 @@ public class App {
         }
     }
 
+
     private void addActivity() {
         System.out.print("Podaj nazwę aktywności: ");
         String activityName = scanner.nextLine();
@@ -260,12 +279,18 @@ public class App {
         System.out.println("Aktywność została dodana.");
     }
 
+
     private void addFeedback(String username) {
+        System.out.print("Podaj ocenę (1-5): ");
+        int rating = scanner.nextInt();
+        scanner.nextLine();
         System.out.print("Podaj swoją opinię: ");
         String feedbackText = scanner.nextLine();
-        feedbackManager.addFeedback(Integer.parseInt(username), feedbackText);
+
+        feedbackManager.addFeedback(rating, feedbackText);
         System.out.println("Opinia została dodana.");
     }
+
 
     private void addCertificate() {
         System.out.print("Podaj nazwę certyfikatu: ");
@@ -276,6 +301,7 @@ public class App {
         System.out.println("Certyfikat został dodany.");
     }
 
+
     private void addPart() {
         System.out.print("Podaj nazwę nowej części: ");
         String partName = scanner.nextLine();
@@ -283,10 +309,17 @@ public class App {
         System.out.println("Nowa część została dodana do magazynu.");
     }
 
+
     private void removePart() {
         System.out.print("Podaj nazwę części do usunięcia: ");
         String partName = scanner.nextLine();
         warehouse.removePart(partName);
         System.out.println("Część została usunięta z magazynu.");
+    }
+
+
+    private void setupEmployees() {
+        employeeTasks.addEmployee(new AssemblyLineEmployee("Jan Kowalski"));
+        employeeTasks.addEmployee(new AssemblyLineEmployee("Anna Nowak"));
     }
 }

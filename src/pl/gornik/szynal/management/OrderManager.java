@@ -10,7 +10,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class OrderManager {
     private static class Order {
-        private final int id; // Dodane pole ID
+        private final int id;
         private final String customerName;
         private final List<String> parts;
 
