@@ -42,7 +42,12 @@ public class Warehouse {
     }
 
     public void listAvailableParts() {
-        System.out.println("Dostępne części do magazynowania:");
+        System.out.println("Części w magazynie dostępne do realizacji zamówień:");
+        parts.forEach((part, quantity) -> System.out.println(part + " - ilość: " + quantity));
+    }
+
+    public void listPossibleParts() {
+        System.out.println("Części możliwe do zamówienia:");
         categories.forEach((category, validParts) -> {
             System.out.println("- " + category + ": " + String.join(", ", validParts));
         });
@@ -52,10 +57,45 @@ public class Warehouse {
         return parts.getOrDefault(part, 0) > 0;
     }
 
-    private void validatePart(String part) {
+    public void validatePart(String part) {
         boolean isValid = categories.values().stream().anyMatch(validParts -> validParts.contains(part));
         if (!isValid) {
             throw new ValidationException("Nieprawidłowa część: " + part);
         }
+    }
+
+    public boolean canFulfillOrder(List<String> partsToCheck) {
+        for (String part : partsToCheck) {
+            if (!hasPart(part)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public void usePart(String part) {
+        if (hasPart(part)) {
+            removePart(part);
+            System.out.println("Zużyto część: " + part);
+        } else {
+            throw new ValidationException("Nie można zużyć części " + part + ", brak w magazynie.");
+        }
+    }
+
+    public List<String> getPartsForOrder(List<String> requestedParts) {
+        List<String> unavailableParts = new ArrayList<>();
+        for (String part : requestedParts) {
+            if (!hasPart(part)) {
+                unavailableParts.add(part);
+            }
+        }
+        if (!unavailableParts.isEmpty()) {
+            throw new ValidationException("Brakuje części: " + String.join(", ", unavailableParts));
+        }
+        return requestedParts;
+    }
+
+    public Map<String, Integer> getParts() {
+        return parts;
     }
 }

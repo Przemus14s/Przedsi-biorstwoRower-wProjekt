@@ -26,7 +26,6 @@ public class Authentication {
                 .orElseThrow(() -> new ValidationException("Nieprawidłowa nazwa użytkownika lub hasło."));
     }
 
-
     public Role getRoleFromString(String roleInput) {
         switch (roleInput.toLowerCase()) {
             case "menadżer":
@@ -38,5 +37,22 @@ public class Authentication {
             default:
                 throw new ValidationException("Nieprawidłowa rola. Rejestracja nie powiodła się.");
         }
+    }
+
+
+    public void changePassword(String username, String oldPassword, String newPassword) {
+        User user = users.stream()
+                .filter(u -> u.getUsername().equals(username))
+                .findFirst()
+                .orElseThrow(() -> new ValidationException("Użytkownik nie istnieje."));
+
+
+        if (!user.getPassword().equals(oldPassword)) {
+            throw new ValidationException("Błędne stare hasło.");
+        }
+
+
+        user.setPassword(newPassword);
+        System.out.println("Hasło zostało zmienione pomyślnie.");
     }
 }
