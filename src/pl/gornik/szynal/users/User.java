@@ -1,11 +1,19 @@
 package pl.gornik.szynal.users;
 
+import pl.gornik.szynal.exceptions.ValidationException;
+
 public class User {
     private final String username;
     private final String password;
-    private final String role;
+    private final Role role;
 
-    public User(String username, String password, String role) {
+    public User(String username, String password, Role role) {
+        if (username == null || username.isEmpty()) {
+            throw new ValidationException("Nazwa użytkownika nie może być pusta.");
+        }
+        if (password == null || password.length() < 6) {
+            throw new ValidationException("Hasło musi mieć co najmniej 6 znaków.");
+        }
         this.username = username;
         this.password = password;
         this.role = role;
@@ -19,7 +27,7 @@ public class User {
         return password;
     }
 
-    public String getRole() {
+    public Role getRole() {
         return role;
     }
 }

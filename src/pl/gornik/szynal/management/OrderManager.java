@@ -1,48 +1,61 @@
 package pl.gornik.szynal.management;
 
-import java.util.*;
+import pl.gornik.szynal.exceptions.ValidationException;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class OrderManager {
-    private List<Map<String, String>> orders = new ArrayList<>();
+    private static class Order {
+        private final String customerName;
+        private final List<String> parts;
 
-    public void addOrder(Map<String, String> order) {
-        orders.add(order);
+        public Order(String customerName, List<String> parts) {
+            if (customerName == null || customerName.isEmpty()) {
+                throw new ValidationException("Imię klienta nie może być puste.");
+            }
+            if (parts == null || parts.isEmpty()) {
+                throw new ValidationException("Zamówienie musi zawierać przynajmniej jedną część.");
+            }
+            this.customerName = customerName;
+            this.parts = parts;
+        }
+
+        @Override
+        public String toString() {
+            return "Zamówienie od " + customerName + ": " + String.join(", ", parts);
+        }
+    }
+
+    private final List<Order> orders = new ArrayList<>();
+
+    public void addOrder(String customerName, List<String> parts) {
+        orders.add(new Order(customerName, parts));
+    }
+
+    public void addOrder(Map<String, String> orderDetails) {
+        List<String> parts = new ArrayList<>(orderDetails.values());
+        String customerName = orderDetails.keySet().iterator().next();
+        addOrder(customerName, parts);
     }
 
     public void listOrders() {
+        System.out.println("Lista zamówień:");
         if (orders.isEmpty()) {
             System.out.println("Brak zamówień.");
         } else {
-            System.out.println("Zamówienia:");
-            for (int i = 0; i < orders.size(); i++) {
-                System.out.println((i + 1) + ". " + orders.get(i));
-            }
+            orders.forEach(System.out::println);
         }
     }
 
-    public void fulfillOrder(int index, Warehouse warehouse) {
-        if (index < 1 || index > orders.size()) {
-            System.out.println("Nieprawidłowy numer zamówienia.");
-            return;
-        }
+    public void fulfillOrder(int orderIndex, Warehouse warehouse) {
+        if (orderIndex >= 0 && orderIndex < orders.size()) {
+            Order order = orders.get(orderIndex);
+            System.out.println("Realizowanie zamówienia: " + order);
 
-        Map<String, String> order = orders.get(index - 1);
-        boolean canFulfill = true;
-
-        for (String part : order.values()) {
-            if (!warehouse.hasPart(part)) {
-                System.out.println("Brak części w magazynie: " + part);
-                canFulfill = false;
-            }
-        }
-        if (canFulfill) {
-            for (String part : order.values()) {
-                warehouse.removePart(part);
-            }
-            orders.remove(index - 1);
-            System.out.println("Zamówienie zostało zrealizowane.");
         } else {
-            System.out.println("Nie udało się zrealizować zamówienia.");
+            System.out.println("Nieprawidłowy numer zamówienia.");
         }
     }
 }

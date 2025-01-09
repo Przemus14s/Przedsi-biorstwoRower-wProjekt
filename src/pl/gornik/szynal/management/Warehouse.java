@@ -1,9 +1,11 @@
 package pl.gornik.szynal.management;
 
+import pl.gornik.szynal.exceptions.ValidationException;
+
 import java.util.*;
 
 public class Warehouse {
-    private Map<String, Integer> parts = new HashMap<>();
+    private final Map<String, Integer> parts = new HashMap<>();
     public static final Map<String, List<String>> categories = new HashMap<>();
 
     static {
@@ -16,21 +18,18 @@ public class Warehouse {
     }
 
     public boolean addPart(String part) {
-        for (List<String> validParts : categories.values()) {
-            if (validParts.contains(part)) {
-                parts.put(part, parts.getOrDefault(part, 0) + 1);
-                return true;
-            }
-        }
-        return false;
+        validatePart(part);
+        parts.put(part, parts.getOrDefault(part, 0) + 1);
+        return true;
     }
 
     public boolean removePart(String part) {
+        validatePart(part);
         if (parts.getOrDefault(part, 0) > 0) {
             parts.put(part, parts.get(part) - 1);
             return true;
         }
-        return false;
+        throw new ValidationException("Część " + part + " nie jest dostępna w magazynie.");
     }
 
     public void listParts() {
@@ -51,5 +50,12 @@ public class Warehouse {
 
     public boolean hasPart(String part) {
         return parts.getOrDefault(part, 0) > 0;
+    }
+
+    private void validatePart(String part) {
+        boolean isValid = categories.values().stream().anyMatch(validParts -> validParts.contains(part));
+        if (!isValid) {
+            throw new ValidationException("Nieprawidłowa część: " + part);
+        }
     }
 }

@@ -1,24 +1,26 @@
 package pl.gornik.szynal.management;
 
+import pl.gornik.szynal.exceptions.ValidationException;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class ActivityManager {
-    private List<String> activities = new ArrayList<>();
+    private final List<String> activities = new ArrayList<>();
 
     public void addActivity(String activity) {
+        if (activity == null || activity.isEmpty()) {
+            throw new ValidationException("Aktywność nie może być pusta.");
+        }
         activities.add(activity);
-        System.out.println("Dodano aktywność: " + activity);
     }
 
     public void listActivities() {
+        System.out.println("Lista aktywności:");
         if (activities.isEmpty()) {
-            System.out.println("Brak zapisanych aktywności.");
+            System.out.println("Brak zarejestrowanych aktywności.");
         } else {
-            System.out.println("Lista aktywności:");
-            for (String activity : activities) {
-                System.out.println("- " + activity);
-            }
+            activities.forEach(System.out::println);
         }
     }
 }

@@ -1,19 +1,18 @@
 package pl.gornik.szynal;
 
 import pl.gornik.szynal.management.*;
-import pl.gornik.szynal.users.Authentication;
-import pl.gornik.szynal.users.User;
+import pl.gornik.szynal.users.*;
 
 import java.util.*;
 
 public class App {
-    private Scanner scanner = new Scanner(System.in);
-    private Authentication auth = new Authentication();
-    private Warehouse warehouse = new Warehouse();
-    private CertificateManager certificateManager = new CertificateManager();
-    private OrderManager orderManager = new OrderManager();
-    private FeedbackManager feedbackManager = new FeedbackManager();
-    private ActivityManager activityManager = new ActivityManager();
+    private final Scanner scanner = new Scanner(System.in);
+    private final Authentication auth = new Authentication();
+    private final Warehouse warehouse = new Warehouse();
+    private final CertificateManager certificateManager = new CertificateManager();
+    private final OrderManager orderManager = new OrderManager();
+    private final FeedbackManager feedbackManager = new FeedbackManager();
+    private final ActivityManager activityManager = new ActivityManager();
 
     public void run() {
         while (true) {
@@ -26,19 +25,16 @@ public class App {
             int choice = scanner.nextInt();
             scanner.nextLine();
 
-            if (choice == 1) {
-                register();
-            } else if (choice == 2) {
-                login();
-            } else if (choice == 3) {
-                System.out.println("Do widzenia!");
-                break;
-            } else {
-                System.out.println("Nieprawidłowa opcja.");
+            switch (choice) {
+                case 1 -> register();
+                case 2 -> login();
+                case 3 -> {
+                    System.out.println("Do widzenia!");
+                    return;
+                }
+                default -> System.out.println("Nieprawidłowa opcja.");
             }
         }
-
-        scanner.close();
     }
 
     private void register() {
@@ -46,32 +42,34 @@ public class App {
         String username = scanner.nextLine();
         System.out.print("Podaj hasło: ");
         String password = scanner.nextLine();
-        System.out.print("Podaj rolę (menadżer/pracownik/klient): ");
-        String role = scanner.nextLine();
+        System.out.print("Podaj rolę (Menadżer, Pracownik, Klient): ");
+        String roleInput = scanner.nextLine();
 
-        auth.register(username, password, role);
-        System.out.println("Rejestracja zakończona sukcesem!");
+        try {
+            Role role = auth.getRoleFromString(roleInput);
+            auth.register(username, password, role);
+            System.out.println("Rejestracja zakończona sukcesem!");
+        } catch (IllegalArgumentException e) {
+            System.out.println("Nieprawidłowa rola. Rejestracja nie powiodła się.");
+        }
     }
 
     private void login() {
-        System.out.print("Nazwa użytkownika: ");
+        System.out.print("Podaj nazwę użytkownika: ");
         String username = scanner.nextLine();
-        System.out.print("Hasło: ");
+        System.out.print("Podaj hasło: ");
         String password = scanner.nextLine();
 
-        User loggedInUser = auth.login(username, password);
-
-        if (loggedInUser != null) {
-            System.out.println("Zalogowano pomyślnie! Witaj, " + loggedInUser.getRole() + " " + loggedInUser.getUsername() + ".");
-            if ("menadżer".equals(loggedInUser.getRole())) {
-                managerMenu();
-            } else if ("pracownik".equals(loggedInUser.getRole())) {
-                employeeMenu();
-            } else if ("klient".equals(loggedInUser.getRole())) {
-                clientMenu();
+        try {
+            User loggedInUser = auth.login(username, password);
+            System.out.println("Zalogowano pomyślnie! Witaj, " + loggedInUser.getRole().getDisplayName() + " " + loggedInUser.getUsername() + ".");
+            switch (loggedInUser.getRole()) {
+                case MANAGER -> managerMenu();
+                case EMPLOYEE -> employeeMenu();
+                case CLIENT -> clientMenu();
             }
-        } else {
-            System.out.println("Nieprawidłowa nazwa użytkownika lub hasło.");
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
         }
     }
 
@@ -85,22 +83,19 @@ public class App {
             System.out.println("5. Wyloguj się");
             System.out.print("Wybierz opcję: ");
 
-            int managerChoice = scanner.nextInt();
+            int choice = scanner.nextInt();
             scanner.nextLine();
 
-            if (managerChoice == 1) {
-                certificateMenu();
-            } else if (managerChoice == 2) {
-                addActivity();
-            } else if (managerChoice == 3) {
-                activityManager.listActivities();
-            } else if (managerChoice == 4) {
-                warehouseMenu();
-            } else if (managerChoice == 5) {
-                System.out.println("Wylogowano.");
-                break;
-            } else {
-                System.out.println("Nieprawidłowa opcja.");
+            switch (choice) {
+                case 1 -> certificateMenu();
+                case 2 -> addActivity();
+                case 3 -> activityManager.listActivities();
+                case 4 -> warehouseMenu();
+                case 5 -> {
+                    System.out.println("Wylogowano.");
+                    return;
+                }
+                default -> System.out.println("Nieprawidłowa opcja.");
             }
         }
     }
@@ -108,26 +103,24 @@ public class App {
     private void employeeMenu() {
         while (true) {
             System.out.println("\n=== Menu Pracownika ===");
-            System.out.println("1. Zarządzaj magazynem");
+            System.out.println("1. Zarządzanie magazynem");
             System.out.println("2. Wyświetl zamówienia");
             System.out.println("3. Realizuj zamówienie");
             System.out.println("4. Wyloguj się");
             System.out.print("Wybierz opcję: ");
 
-            int employeeChoice = scanner.nextInt();
+            int choice = scanner.nextInt();
             scanner.nextLine();
 
-            if (employeeChoice == 1) {
-                warehouseMenu();
-            } else if (employeeChoice == 2) {
-                orderManager.listOrders();
-            } else if (employeeChoice == 3) {
-                fulfillOrder();
-            } else if (employeeChoice == 4) {
-                System.out.println("Wylogowano.");
-                break;
-            } else {
-                System.out.println("Nieprawidłowa opcja.");
+            switch (choice) {
+                case 1 -> warehouseMenu();
+                case 2 -> orderManager.listOrders();
+                case 3 -> fulfillOrder();
+                case 4 -> {
+                    System.out.println("Wylogowano.");
+                    return;
+                }
+                default -> System.out.println("Nieprawidłowa opcja.");
             }
         }
     }
@@ -142,53 +135,51 @@ public class App {
             System.out.println("5. Wyloguj się");
             System.out.print("Wybierz opcję: ");
 
-            int clientChoice = scanner.nextInt();
+            int choice = scanner.nextInt();
             scanner.nextLine();
 
-            if (clientChoice == 1) {
-                placeOrder();
-            } else if (clientChoice == 2) {
-                certificateManager.listCertificates();
-            } else if (clientChoice == 3) {
-                feedbackManager.listFeedbacks();
-            } else if (clientChoice == 4) {
-                addFeedback();
-            } else if (clientChoice == 5) {
-                System.out.println("Wylogowano.");
-                break;
-            } else {
-                System.out.println("Nieprawidłowa opcja.");
+            switch (choice) {
+                case 1 -> placeOrder();
+                case 2 -> certificateManager.listCertificates();
+                case 3 -> feedbackManager.listFeedbacks();
+                case 4 -> addFeedback();
+                case 5 -> {
+                    System.out.println("Wylogowano.");
+                    return;
+                }
+                default -> System.out.println("Nieprawidłowa opcja.");
             }
         }
     }
 
     private void warehouseMenu() {
         while (true) {
-            System.out.println("\n=== Zarządzanie magazynem ===");
+            System.out.println("\n=== Zarządzanie Magazynem ===");
             System.out.println("1. Dodaj część");
             System.out.println("2. Wyświetl części w magazynie");
             System.out.println("3. Wyświetl dostępne części");
             System.out.println("4. Powrót");
             System.out.print("Wybierz opcję: ");
-            int warehouseChoice = scanner.nextInt();
+
+            int choice = scanner.nextInt();
             scanner.nextLine();
 
-            if (warehouseChoice == 1) {
-                System.out.print("Podaj nazwę części do dodania: ");
-                String part = scanner.nextLine();
-                if (warehouse.addPart(part)) {
-                    System.out.println("Dodano część do magazynu.");
-                } else {
-                    System.out.println("Nieprawidłowa część.");
+            switch (choice) {
+                case 1 -> {
+                    System.out.print("Podaj nazwę części do dodania: ");
+                    String part = scanner.nextLine();
+                    if (warehouse.addPart(part)) {
+                        System.out.println("Dodano część do magazynu.");
+                    } else {
+                        System.out.println("Nieprawidłowa część.");
+                    }
                 }
-            } else if (warehouseChoice == 2) {
-                warehouse.listParts();
-            } else if (warehouseChoice == 3) {
-                warehouse.listAvailableParts();
-            } else if (warehouseChoice == 4) {
-                break;
-            } else {
-                System.out.println("Nieprawidłowa opcja.");
+                case 2 -> warehouse.listParts();
+                case 3 -> warehouse.listAvailableParts();
+                case 4 -> {
+                    return;
+                }
+                default -> System.out.println("Nieprawidłowa opcja.");
             }
         }
     }
@@ -197,16 +188,20 @@ public class App {
         System.out.println("1. Dodaj certyfikat");
         System.out.println("2. Wyświetl certyfikaty");
         System.out.print("Wybierz opcję: ");
-        int certChoice = scanner.nextInt();
+        int choice = scanner.nextInt();
         scanner.nextLine();
 
-        if (certChoice == 1) {
-            System.out.print("Podaj treść certyfikatu: ");
-            String certificate = scanner.nextLine();
-            certificateManager.addCertificate(certificate);
-            System.out.println("Dodano certyfikat.");
-        } else if (certChoice == 2) {
-            certificateManager.listCertificates();
+        switch (choice) {
+            case 1 -> {
+                System.out.print("Podaj nazwę certyfikatu: ");
+                String certificate = scanner.nextLine();
+                System.out.print("Podaj treść certyfikatu: ");
+                String certificateContent = scanner.nextLine();
+                certificateManager.addCertificate(certificate, certificateContent);
+                System.out.println("Dodano certyfikat.");
+            }
+            case 2 -> certificateManager.listCertificates();
+            default -> System.out.println("Nieprawidłowa opcja.");
         }
     }
 
@@ -251,6 +246,12 @@ public class App {
         scanner.nextLine();
         System.out.print("Podaj komentarz: ");
         String comment = scanner.nextLine();
+
+        if (rating < 1 || rating > 5) {
+            System.out.println("Nieprawidłowa ocena. Musi być w zakresie 1-5.");
+            return;
+        }
+
         feedbackManager.addFeedback(rating, comment);
         System.out.println("Dodano opinię.");
     }

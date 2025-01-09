@@ -1,26 +1,31 @@
 package pl.gornik.szynal.management;
 
-import java.util.*;
+import pl.gornik.szynal.exceptions.ValidationException;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class CertificateManager {
-    private final List<String> certificates;
+    private final Map<String, String> certificates = new HashMap<>();
 
-    public CertificateManager() {
-        certificates = new ArrayList<>();
-    }
-
-    public void addCertificate(String certificate) {
-        certificates.add(certificate);
+    public void addCertificate(String name, String certificate) {
+        if (name == null || name.isEmpty()) {
+            throw new ValidationException("Nazwa użytkownika nie może być pusta.");
+        }
+        if (certificate == null || certificate.isEmpty()) {
+            throw new ValidationException("Nazwa certyfikatu nie może być pusta.");
+        }
+        certificates.put(name, certificate);
     }
 
     public void listCertificates() {
+        System.out.println("Lista certyfikatów:");
         if (certificates.isEmpty()) {
             System.out.println("Brak certyfikatów.");
         } else {
-            System.out.println("Lista certyfikatów:");
-            for (String cert : certificates) {
-                System.out.println("- " + cert);
-            }
+            certificates.forEach((name, certificate) ->
+                    System.out.println("Użytkownik: " + name + ", Certyfikat: " + certificate)
+            );
         }
     }
 }
